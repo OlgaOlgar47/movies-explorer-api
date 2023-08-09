@@ -6,7 +6,8 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { DATABASE_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+// eslint-disable-next-line no-undef
+const { DATABASE_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb'} = process.env;
 const { PORT } = require('./config');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -14,10 +15,24 @@ const errorHandler = require('./middlewares/errorHandler');
 
 mongoose.connect(DATABASE_URL);
 
+// Проверка состояния подключения
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Ошибка подключения к базе данных:'));
+db.once('open', () => {
+  console.log('Подключение к базе данных установлено.');
+});
+
+// Для проверки состояния подключения
+if (db.readyState === 1) {
+  console.log('База данных подключена.');
+} else {
+  console.log('База данных не подключена.');
+}
+
 const app = express();
 app.use(
   cors({
-    origin: 'https://mestocean.nomoredomains.monster',
+    origin: 'http://localhost:3000',
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     allowedHeaders: ['Content-type', 'Authorization'],
     credentials: true,
@@ -31,7 +46,7 @@ app.use(cookieParser());
 require('dotenv').config();
 
 const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
+const cardRouter = require('./routes/movies');
 const NotFoundError = require('./utils/errors/NotFoundError');
 
 app.use(express.json());
@@ -60,10 +75,6 @@ app.post(
       email: Joi.string().required().email(),
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-      avatar: Joi.string().pattern(
-        /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/
-      ),
     }),
   }),
   createUser

@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
+// eslint-disable-next-line no-undef
 const { NODE_ENV, JWT_SECRET } = process.env;
 const BadRequestError = require('../utils/errors/BadRequestError');
 // const UnauthorizedError = require('../utils/errors/UnauthorizedError');
@@ -34,6 +35,17 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
+const logout = (req, res) => {
+  // удалится JWT из куков пользователя
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+    sameSite: true,
+  });
+
+  res.status(200).json({ message: 'Logout successful' });
+};
+
 const getUserMe = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
@@ -46,38 +58,9 @@ const getUserMe = (req, res, next) => {
     .catch(next);
 };
 
-const getUsers = (req, res, next) => {
-  User.find()
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch(next);
-};
-
-const getUser = (req, res, next) => {
-  const { userId } = req.params;
-
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('User not found');
-      }
-      res.status(200).json(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        // Если произошла ошибка приведения типов, выбрасываем BadRequestError
-        next(new BadRequestError(err.message));
-      } else {
-        // В противном случае передаем ошибку дальше
-        next(err);
-      }
-    });
-};
-
 const createUser = (req, res, next) => {
   // eslint-disable-next-line object-curly-newline
-  const { email, password, name, about, avatar } = req.body;
+  const { email, password, name, } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) =>
@@ -85,8 +68,6 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
         name,
-        about,
-        avatar,
       })
     )
     .then((user) => {
@@ -105,35 +86,10 @@ const createUser = (req, res, next) => {
 
 const updateUser = (req, res, next) => {
   const id = req.user._id;
-  const { name, about } = req.body;
+  const { name, email } = req.body;
   User.findByIdAndUpdate(
     id,
-    { name, about },
-    {
-      new: true,
-      runValidators: true,
-    }
-  )
-    .orFail(() => {
-      throw new NotFoundError('User not found');
-    })
-    .then((user) => {
-      res.status(200).json(user);
-    })
-    .catch((e) => {
-      if (e.name === 'ValidationError') {
-        return next(new BadRequestError(e.message));
-      }
-      next(e);
-    });
-};
-
-const updateAvatar = (req, res, next) => {
-  const id = req.user._id;
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(
-    id,
-    { avatar },
+    { name, email },
     {
       new: true,
       runValidators: true,
@@ -155,10 +111,8 @@ const updateAvatar = (req, res, next) => {
 
 module.exports = {
   login,
-  getUser,
-  getUsers,
+  logout,
   getUserMe,
   createUser,
   updateUser,
-  updateAvatar,
 };

@@ -1,18 +1,16 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 const {
-  getCards,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard,
-} = require('../controllers/cards');
+  getMovies,
+  createMovie,
+  deleteMovie,
+} = require('../controllers/movies');
 
-const cardRouter = express.Router();
+const movieRouter = express.Router();
 
-cardRouter.get('/cards', getCards);
-cardRouter.post(
-  '/cards',
+movieRouter.get('/movies', getMovies);
+movieRouter.post(
+  '/movies',
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
@@ -21,34 +19,16 @@ cardRouter.post(
         .pattern(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/),
     }),
   }),
-  createCard
+  createMovie
 );
-cardRouter.delete(
-  '/cards/:cardId',
+movieRouter.delete(
+  '/movies/:movieId',
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
+      movieId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
     }),
   }),
-  deleteCard
-);
-cardRouter.put(
-  '/cards/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
-    }),
-  }),
-  likeCard
-);
-cardRouter.delete(
-  '/cards/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
-    }),
-  }),
-  dislikeCard
+  deleteMovie
 );
 
-module.exports = cardRouter;
+module.exports = movieRouter;

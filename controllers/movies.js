@@ -1,79 +1,47 @@
 /* eslint-disable consistent-return */
-const Card = require('../models/cards');
+const Movie = require('../models/movies');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ForbiddenError = require('../utils/errors/ForbiddenError');
 
-const getCards = (req, res, next) => {
-  Card.find({}, { __v: 0 })
-    .then((cards) => {
-      res.json(cards);
+const getMovies = (req, res, next) => {
+  Movie.find({}, { __v: 0 })
+    .then((movies) => {
+      res.json(movies);
     })
     .catch(next);
 };
 
-const createCard = (req, res, next) => {
+const createMovie = (req, res, next) => {
   const { name, link } = req.body;
 
-  return Card.create({ name, link, owner: req.user._id })
-    .then((card) => {
-      res.status(201).json(card);
+  return Movie.create({ name, link, owner: req.user._id })
+    .then((movie) => {
+      res.status(201).json(movie);
     })
     .catch(next);
 };
 
-const deleteCard = (req, res, next) => {
-  const { cardId } = req.params;
+const deleteMovie = (req, res, next) => {
+  const { movieId } = req.params;
 
-  Card.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Card not found');
+  Movie.findById(movieId)
+    .then((movie) => {
+      if (!movie) {
+        throw new NotFoundError('Movie not found');
       }
-      if (card.owner.toString() !== req.user._id) {
-        throw new ForbiddenError('Cannot delete card of other user');
+      if (movie.owner.toString() !== req.user._id) {
+        throw new ForbiddenError('Cannot delete movie of other user');
       }
-      return Card.findByIdAndRemove(cardId);
+      return Movie.findByIdAndRemove(movieId);
     })
-    .then((card) => {
-      res.json(card);
-    })
-    .catch(next);
-};
-
-const likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true }
-  )
-    .orFail(() => {
-      throw new NotFoundError('Card not found');
-    })
-    .then((card) => {
-      res.json(card);
-    })
-    .catch(next);
-};
-
-const dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true }
-  )
-    .orFail(() => {
-      throw new NotFoundError('Card not found');
-    })
-    .then((card) => {
-      res.json(card);
+    .then((movie) => {
+      res.json(movie);
     })
     .catch(next);
 };
 
 module.exports = {
-  getCards,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard,
+  getMovies,
+  createMovie,
+  deleteMovie,
 };
