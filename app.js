@@ -20,14 +20,14 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Ошибка подключения к базе данных:'));
 db.once('open', () => {
   console.log('Подключение к базе данных установлено.');
-});
 
-// Для проверки состояния подключения
-if (db.readyState === 1) {
-  console.log('База данных подключена.');
-} else {
-  console.log('База данных не подключена.');
+  // Проверка состояния подключения
+  if (db.readyState === 1) {
+    console.log('База данных подключена.');
+  } else {
+    console.log('База данных не подключена.');
 }
+});
 
 const app = express();
 app.use(
