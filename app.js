@@ -8,8 +8,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const helmet = require('helmet');
 const { rateLimit } = require('express-rate-limit');
 
-app.use(helmet());
-
 // eslint-disable-next-line no-undef
 const { DATABASE_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb'} = process.env;
 const { PORT } = require('./config');
@@ -55,6 +53,7 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
+app.use(helmet());
 
 app.use(cookieParser());
 
