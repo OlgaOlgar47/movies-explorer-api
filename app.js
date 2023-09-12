@@ -32,7 +32,7 @@ db.once('open', () => {
 const app = express();
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://api.movies-explorerolga.nomoreparties.co',
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     allowedHeaders: ['Content-type', 'Authorization'],
     credentials: true,
