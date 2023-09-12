@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { helmet } = require('helmet');
+const helmet = require('helmet');
 const { limiter } = require('./middlewares/limiter');
 
 // eslint-disable-next-line no-undef
