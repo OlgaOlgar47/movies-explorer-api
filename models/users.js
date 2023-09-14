@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const UnauthorizedError = require('../utils/errors/UnauthorizedError');
-const { ERR_UNAUTHORIZED_INPUT, ERR_EMAIL_INPUT } = require('../utils/constants');
+const {
+  ERR_UNAUTHORIZED_INPUT, ERR_EMAIL_INPUT, ERR_MIN_INPUT, ERR_MAX_INPUT
+} = require('../utils/constants');
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,8 +26,8 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      minlength: 2,
-      maxlength: 30,
+      minlength: [2, ERR_MIN_INPUT],
+      maxlength: [30, ERR_MAX_INPUT]
     },
   },
   { toJSON: { useProjection: true }, toObject: { useProjection: true } }
