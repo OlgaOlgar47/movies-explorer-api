@@ -5,7 +5,7 @@ const {
   updateUser,
   logout,
 } = require('../controllers/users');
-const validateUser = require('../validation/validation');
+const { validateUser } = require('../validation/validation');
 
 const userRouter = express.Router();
 
