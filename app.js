@@ -9,15 +9,16 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
-const { PORT } = require('./config');
+const { PORT, DATABASE_DEV } = require('./config');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 require('dotenv').config();
 const NotFoundError = require('./utils/errors/NotFoundError');
+const { ERR_SERVER, ERR_PAGE_NOT_FOUND } = require('./utils/constants');
 
 // Проверяем значение NODE_ENV и устанавливаем соответствующий URL для подключения к базе данных
-const dbURL = NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://127.0.0.1:27017/devdb';
+const dbURL = NODE_ENV === 'production' ? DATABASE_URL : DATABASE_DEV;
 
 mongoose.connect(dbURL);
 
@@ -56,7 +57,7 @@ app.use(requestLogger); // подключаем логгер запросов
 
 app.get('/crash-test', () => {
   setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
+    throw new Error(ERR_SERVER);
   }, 0);
 });
 
@@ -87,7 +88,7 @@ const routes = require('./routes/index');
 app.use(auth, routes);
 
 app.use('*', auth, () => {
-  throw new NotFoundError('Page not found');
+  throw new NotFoundError(ERR_PAGE_NOT_FOUND);
 });
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors());

@@ -6,6 +6,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const BadRequestError = require('../utils/errors/BadRequestError');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ConflictError = require('../utils/errors/ConflictError');
+const { ERR_USER_NOT_FOUND, ERR_CONFLICT_EMAIL } = require('../utils/constants');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -44,7 +45,7 @@ const getUserMe = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('User not found');
+        throw new NotFoundError(ERR_USER_NOT_FOUND);
       }
       res.status(200).json(user);
     })
@@ -67,7 +68,7 @@ const createUser = (req, res, next) => {
       if (e.name === 'ValidationError') {
         return next(new BadRequestError(e.message));
       } if (e.code === 11000) {
-        return next(new ConflictError('Такой email уже зарегистрирован'));
+        return next(new ConflictError(ERR_CONFLICT_EMAIL));
       }
       return next(e);
     });
@@ -85,7 +86,7 @@ const updateUser = (req, res, next) => {
     }
   )
     .orFail(() => {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError(ERR_USER_NOT_FOUND);
     })
     .then((user) => {
       res.status(200).json(user);
@@ -94,7 +95,7 @@ const updateUser = (req, res, next) => {
       if (e.name === 'ValidationError') {
         return next(new BadRequestError(e.message));
       } if (e.code === 11000) {
-        return next(new ConflictError('Такой email уже зарегистрирован'));
+        return next(new ConflictError(ERR_CONFLICT_EMAIL));
       }
       return next(e);
     });

@@ -1,4 +1,5 @@
-const PORT = 3000;
+const PORT = 3001;
+const DATABASE_DEV = 'mongodb://127.0.0.1:27017/bitfilmsdb';
 const STATUS_BAD_REQUEST = 400;
 const STATUS_UNAUTHORIZED = 401;
 const STATUS_FORBITTEN = 403;
@@ -9,6 +10,7 @@ const DEFAULT_ERROR_MESSAGE = 'На сервере произошла ошибк
 
 module.exports = {
   PORT,
+  DATABASE_DEV,
   STATUS_BAD_REQUEST,
   STATUS_UNAUTHORIZED,
   STATUS_FORBITTEN,

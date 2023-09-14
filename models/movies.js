@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ERR_URL_INPUT = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -35,7 +36,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/.test(v);
       },
-      message: 'Некорректно введена ссылка',
+      message: ERR_URL_INPUT,
     },
     required: true,
   },
@@ -45,7 +46,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/.test(v);
       },
-      message: 'Некорректно введена ссылка',
+      message: ERR_URL_INPUT,
     },
     required: true,
   },
@@ -55,7 +56,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/.test(v);
       },
-      message: 'Некорректно введена ссылка',
+      message: ERR_URL_INPUT,
     },
     required: true,
   },
