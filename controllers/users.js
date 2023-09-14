@@ -1,16 +1,9 @@
-/* eslint-disable no-else-return */
-/* eslint-disable consistent-return */
-/* eslint-disable function-paren-newline */
-/* eslint-disable implicit-arrow-linebreak */
 const bcrypt = require('bcryptjs');
-// const MongoServerError = require('mongoose').Error;
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
-// eslint-disable-next-line no-undef
 const { NODE_ENV, JWT_SECRET } = process.env;
 const BadRequestError = require('../utils/errors/BadRequestError');
-// const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ConflictError = require('../utils/errors/ConflictError');
 
@@ -59,28 +52,24 @@ const getUserMe = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  // eslint-disable-next-line object-curly-newline
   const { email, password, name, } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) =>
-      User.create({
-        email,
-        password: hash,
-        name,
-      })
-    )
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+    }))
     .then((user) => {
       res.status(201).json({ user });
     })
     .catch((e) => {
       if (e.name === 'ValidationError') {
         return next(new BadRequestError(e.message));
-      } else if (e.code === 11000) {
+      } if (e.code === 11000) {
         return next(new ConflictError('Такой email уже зарегистрирован'));
-      } else {
-        return next(e);
       }
+      return next(e);
     });
 };
 
@@ -104,8 +93,10 @@ const updateUser = (req, res, next) => {
     .catch((e) => {
       if (e.name === 'ValidationError') {
         return next(new BadRequestError(e.message));
+      } if (e.code === 11000) {
+        return next(new ConflictError('Такой email уже зарегистрирован'));
       }
-      next(e);
+      return next(e);
     });
 };
 

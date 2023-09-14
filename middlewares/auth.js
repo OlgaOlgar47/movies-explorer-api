@@ -1,10 +1,8 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 
-// eslint-disable-next-line no-undef
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-// eslint-disable-next-line consistent-return
 const auth = (req, res, next) => {
   const token = req.cookies.jwt; // Получаем токен из куки
   if (!token) {
@@ -24,7 +22,7 @@ const auth = (req, res, next) => {
 
   req.user = payload; // записываем пейлоуд в объект запроса
 
-  next();
+  return next();
 };
 
 module.exports = auth;

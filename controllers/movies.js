@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const Movie = require('../models/movies');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ForbiddenError = require('../utils/errors/ForbiddenError');
@@ -12,9 +11,34 @@ const getMovies = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const { name, link } = req.body;
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN
+  } = req.body;
 
-  return Movie.create({ name, link, owner: req.user._id })
+  return Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    owner: req.user._id,
+    nameRU,
+    nameEN
+  })
     .then((movie) => {
       res.status(201).json(movie);
     })

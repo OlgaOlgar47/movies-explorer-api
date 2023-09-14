@@ -13,10 +13,22 @@ movieRouter.post(
   '/movies',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      link: Joi.string()
-        .required()
+      country: Joi.string().required().min(2).max(30),
+      director: Joi.string().required().min(2).max(30),
+      duration: Joi.number().required(),
+      year: Joi.string().required().min(2).max(30),
+      description: Joi.string().required().min(2).max(100),
+      image: Joi.string().required()
         .pattern(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/),
+      trailerLink: Joi.string().required()
+        .pattern(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/),
+      thumbnail: Joi.string().required()
+        .pattern(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/),
+      movieId: Joi.number().required(),
+      nameRU: Joi.string().required().min(2).max(30)
+        .pattern(/^[А-Яа-яЁё]+$/),
+      nameEN: Joi.string().required().min(2).max(30)
+        .pattern(/^[A-Za-z]+$/)
     }),
   }),
   createMovie

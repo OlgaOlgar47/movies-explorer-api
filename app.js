@@ -1,21 +1,25 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+
+const { DATABASE_URL, NODE_ENV } = process.env;// DATABASE_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb'
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
 const helmet = require('helmet');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
-
-// eslint-disable-next-line no-undef
-const { DATABASE_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb'} = process.env;
 const { PORT } = require('./config');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
+require('dotenv').config();
+const NotFoundError = require('./utils/errors/NotFoundError');
 
-mongoose.connect(DATABASE_URL);
+// Проверяем значение NODE_ENV и устанавливаем соответствующий URL для подключения к базе данных
+const dbURL = NODE_ENV === 'production' ? DATABASE_URL : 'mongodb://127.0.0.1:27017/devdb';
+
+mongoose.connect(dbURL);
 
 // Проверка состояния подключения
 const db = mongoose.connection;
@@ -23,12 +27,11 @@ db.on('error', console.error.bind(console, 'Ошибка подключения 
 db.once('open', () => {
   console.log('Подключение к базе данных установлено.');
 
-  // Проверка состояния подключения
   if (db.readyState === 1) {
     console.log('База данных подключена.');
   } else {
     console.log('База данных не подключена.');
-}
+  }
 });
 
 const app = express();
@@ -43,17 +46,10 @@ app.use(
   })
 );
 
-// Apply the rate limiting middleware to all requests
 app.use(limiter);
 app.use(helmet());
 
 app.use(cookieParser());
-
-require('dotenv').config();
-
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/movies');
-const NotFoundError = require('./utils/errors/NotFoundError');
 
 app.use(express.json());
 app.use(requestLogger); // подключаем логгер запросов
@@ -86,11 +82,11 @@ app.post(
   createUser
 );
 
-app.use(auth, userRouter);
-app.use(auth, cardRouter);
+const routes = require('./routes/index');
 
-// eslint-disable-next-line no-unused-vars
-app.use('*', auth, (req, res) => {
+app.use(auth, routes);
+
+app.use('*', auth, () => {
   throw new NotFoundError('Page not found');
 });
 app.use(errorLogger); // подключаем логгер ошибок
