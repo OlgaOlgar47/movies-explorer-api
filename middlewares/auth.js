@@ -7,7 +7,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const auth = (req, res, next) => {
   const token = req.cookies.jwt; // Получаем токен из куки
   if (!token) {
-    throw new UnauthorizedError(ERR_UNAUTHORIZED);
+    throw new UnauthorizedError(ERR_UNAUTHORIZED.ERR_UNAUTHORIZED);
   }
 
   let payload;
