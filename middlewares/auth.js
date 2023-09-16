@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 const ERR_UNAUTHORIZED = require('../utils/constants');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../config');
 
 const auth = (req, res, next) => {
   const token = req.cookies.jwt; // Получаем токен из куки

@@ -4,7 +4,9 @@ const ForbiddenError = require('../utils/errors/ForbiddenError');
 const { ERR_MOVIE_NOT_FOUND, ERR_FORBIDDEN_DELETE } = require('../utils/constants');
 
 const getMovies = (req, res, next) => {
-  Movie.find({}, { __v: 0 })
+  const userId = req.user._id;
+
+  Movie.find({ owner: userId }, { __v: 0 })
     .then((movies) => {
       res.json(movies);
     })
