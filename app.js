@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const {
-  DATABASE_URL, DATABASE_DEV, NODE_ENV, PORT
+  DATABASE_URL, DATABASE_DEV, NODE_ENV, PORT,
 } = require('./config');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
