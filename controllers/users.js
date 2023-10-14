@@ -23,7 +23,7 @@ const login = (req, res, next) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        sameSite: none,
+        sameSite: 'none',
       }); // httpOnly кука с токеном
       res.status(200).json({ token });
     })
