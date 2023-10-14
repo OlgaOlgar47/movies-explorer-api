@@ -22,7 +22,8 @@ const login = (req, res, next) => {
       res.cookie('jwt', token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: true,
+        secure: true,
+        sameSite: none,
       }); // httpOnly кука с токеном
       res.status(200).json({ token });
     })
