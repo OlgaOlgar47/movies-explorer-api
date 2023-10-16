@@ -1,7 +1,7 @@
 const {
   STATUS_INTERNAL_SERVER_ERROR,
   DEFAULT_ERROR_MESSAGE,
-} = require('../config');
+} = require('../utils/constants');
 
 const errorHandler = (err, req, res) => {
   // если у ошибки нет статуса, выставляем 500
