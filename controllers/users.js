@@ -35,7 +35,7 @@ const logout = (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
-    sameSite: true,
+    sameSite: 'none',
   });
 
   res.status(200).json({ message: 'Logout successful' });
