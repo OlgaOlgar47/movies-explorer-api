@@ -32,12 +32,10 @@ const login = (req, res, next) => {
 
 const logout = (req, res) => {
   // удалится JWT из куков пользователя
-  res.cookie('jwt', '', {
+  res.clearCookie('jwt', {
     httpOnly: true,
-    expires: new Date(0),
     sameSite: 'none',
   });
-
   res.status(200).json({ message: 'Logout successful' });
 };
 
