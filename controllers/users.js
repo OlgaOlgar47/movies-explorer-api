@@ -34,6 +34,7 @@ const logout = (req, res) => {
   // удалится JWT из куков пользователя
   res.clearCookie('jwt', {
     httpOnly: true,
+    secure: true, // соответствует настройкам, установленным в login
     sameSite: 'none',
   });
   res.status(200).json({ message: 'Logout successful' });
