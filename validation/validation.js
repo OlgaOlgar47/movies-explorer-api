@@ -45,16 +45,9 @@ const validateMovie = celebrate({
   }),
 });
 
-const validateMovieIdParam = celebrate({
-  body: Joi.object().keys({
-    movieId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required(),
-  }),
-});
-
 module.exports = {
   validateSignin,
   validateSignup,
   validateUser,
   validateMovie,
-  validateMovieIdParam,
 };
