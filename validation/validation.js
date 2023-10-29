@@ -41,7 +41,7 @@ const validateMovie = celebrate({
     nameRU: Joi.string().required()
       .pattern(/^.+$/u),
     nameEN: Joi.string().required()
-      .pattern(/^[A-Za-z\s'"0-9]+$/)
+      .pattern(/^.+$/u)
   }),
 });
 
