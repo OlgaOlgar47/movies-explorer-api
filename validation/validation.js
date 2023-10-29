@@ -39,7 +39,7 @@ const validateMovie = celebrate({
       .pattern(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?#?$/),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required()
-      .pattern(/^[А-Яа-яЁё\s'"“”0-9«»]+$/u),
+      .pattern(/^.+$/u),
     nameEN: Joi.string().required()
       .pattern(/^[A-Za-z\s'"0-9]+$/)
   }),
